@@ -8,8 +8,7 @@ def main [] {}
 
 def "main run ci" [tag: string] {
 
-    print $tag
-    # main build image $tag
+    main build image $tag
 
 }
 
