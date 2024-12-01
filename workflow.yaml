@@ -21,12 +21,12 @@ spec:
     parameters:
     - name: repo
       value: https://github.com/vfarcic/argo-workflows-demo-2
-    # - name: registry
-    #   value: ghcr.io
-    # - name: registry-user
-    #   value: vfarcic
-    # - name: image
-    #   value: argo-workflows-demo-2
+    - name: registry
+      value: ghcr.io
+    - name: registry-user
+      value: vfarcic
+    - name: image
+      value: argo-workflows-demo-2
   templates:
   - name: ci
     dag:
@@ -50,8 +50,8 @@ spec:
         template: kaniko
         arguments:
           parameters:
-          - name: tag
-            value: "{{tasks.generate-tag.outputs.result}}"
+          - name: image
+            value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
         dependencies: [checkout, generate-tag]
       # # FIXME: Remove
       # - name: show-files
@@ -147,7 +147,7 @@ spec:
   - name: kaniko
     inputs:
       parameters:
-      - name: tag
+      - name: image
     script:
       image: gcr.io/kaniko-project/executor:v1.23.2-debug
       workingDir: /workdir
@@ -156,11 +156,9 @@ spec:
         /kaniko/executor \
             --dockerfile=Dockerfile \
             --context=. \
-            --destination=xxx \
-            --cache=false
-            
-        # devbox run --config devbox-ci.json -- chmod +x dot.nu
-        # devbox run --config devbox-ci.json -- ./dot.nu run ci {{inputs.parameters.tag}}
+            --destination={{inputs.parameters.image}} \
+            --cache=false \
+            --no-push
       volumeMounts:
       - name: workdir
         mountPath: /workdir
