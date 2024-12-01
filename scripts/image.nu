@@ -25,7 +25,7 @@ def "main build image" [
     } else if $builder == "kaniko" {
 
         (
-            kaniko --dockerfile=Dockerfile --context=.
+            executor --dockerfile=Dockerfile --context=.
                 $"--destination=($registry)/($image):($tag)"
                 $"--destination=($registry)/($image):latest"
         )
