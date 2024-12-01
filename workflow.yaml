@@ -35,6 +35,9 @@ spec:
           parameters:
           - name: repo
             value: https://github.com/vfarcic/silly-demo
+      - name: execute
+        template: execute
+        dependencies: [checkout]
       # - name: generate-tag
       #   template: date-tag
       # # FIXME: Remove
@@ -110,6 +113,24 @@ spec:
         limits:
           memory: 128Mi
           cpu: 100m
+  - name: execute
+    # inputs:
+    #   parameters:
+    #   - name: repo
+    script:
+      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.4
+      workingDir: /workdir
+      command: [sh]
+      source: |
+        devbox run --config devbox-ci.json -- chmod +x dot.nu
+        devbox run --config devbox-ci.json -- ./dot.nu run ci
+      volumeMounts:
+      - name: workdir
+        mountPath: /workdir
+      resources:
+        limits:
+          memory: 1024Mi
+          cpu: 1000m
   # FIXME: Remove
   # - name: kaniko
   #   inputs:

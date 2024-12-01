@@ -2,8 +2,8 @@
   "lockfile_version": "1",
   "packages": {
     "argo@3.5.12": {
-      "last_modified": "2024-11-16T04:25:12Z",
-      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#argo",
+      "last_modified": "2024-11-28T07:51:56Z",
+      "resolved": "github:NixOS/nixpkgs/226216574ada4c3ecefcbbec41f39ce4655f78ef#argo",
       "source": "devbox-search",
       "version": "3.5.12",
       "systems": {
@@ -31,11 +31,11 @@
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/x16mvg4hr7xy8sfzww6sinmbb1m5kd3r-argo-3.5.12",
+              "path": "/nix/store/4fag55952n8hjbzga4bx151pgb5mdpff-argo-3.5.12",
               "default": true
             }
           ],
-          "store_path": "/nix/store/x16mvg4hr7xy8sfzww6sinmbb1m5kd3r-argo-3.5.12"
+          "store_path": "/nix/store/4fag55952n8hjbzga4bx151pgb5mdpff-argo-3.5.12"
         },
         "x86_64-linux": {
           "outputs": [
@@ -50,8 +50,8 @@
       }
     },
     "kind@0.24.0": {
-      "last_modified": "2024-11-16T04:25:12Z",
-      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#kind",
+      "last_modified": "2024-11-28T07:51:56Z",
+      "resolved": "github:NixOS/nixpkgs/226216574ada4c3ecefcbbec41f39ce4655f78ef#kind",
       "source": "devbox-search",
       "version": "0.24.0",
       "systems": {
@@ -98,8 +98,8 @@
       }
     },
     "kubectl@1.31.2": {
-      "last_modified": "2024-11-16T04:25:12Z",
-      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#kubectl",
+      "last_modified": "2024-11-28T07:51:56Z",
+      "resolved": "github:NixOS/nixpkgs/226216574ada4c3ecefcbbec41f39ce4655f78ef#kubectl",
       "source": "devbox-search",
       "version": "1.31.2",
       "systems": {
