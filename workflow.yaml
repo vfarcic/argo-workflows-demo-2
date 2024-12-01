@@ -49,17 +49,19 @@ spec:
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
         dependencies: [checkout, generate-tag]
-      - name: execute
+      - name: run-unit-tests
         template: execute
         arguments:
           parameters:
-          - name: tag
-            value: "{{tasks.generate-tag.outputs.result}}"
-          - name: registry
-            value: "{{workflow.parameters.registry}}"
-          - name: image
-            value: "{{workflow.parameters.image}}"
-        dependencies: [build-image]
+          - name: target
+            value: "run unit_tests"
+          # - name: tag
+          #   value: "{{tasks.generate-tag.outputs.result}}"
+          # - name: registry
+          #   value: "{{workflow.parameters.registry}}"
+          # - name: image
+          #   value: "{{workflow.parameters.image}}"
+        dependencies: [checkout, generate-tag]
       # # FIXME: Remove
       # - name: show-files
       #   dependencies: [checkout]
@@ -136,6 +138,7 @@ spec:
   - name: execute
     inputs:
       parameters:
+      - name: target
       - name: tag
       - name: registry
       - name: image
@@ -147,9 +150,7 @@ spec:
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         
         devbox run --config devbox-ci.json -- \
-          ./dot.nu run ci {{inputs.parameters.tag}} \
-          --registry {{inputs.parameters.registry}} \
-          --image {{inputs.parameters.image}}
+          ./dot.nu run {{inputs.parameters.target}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir

@@ -6,21 +6,15 @@ source  scripts/image.nu
 
 def main [] {}
 
-def "main run ci" [
-    tag: string                    # The tag of the image (e.g., 0.0.1)
-    --registry = "ghcr.io/vfarcic" # Image registry (e.g., ghcr.io/vfarcic)
-    --image = "silly-demo"         # Image name (e.g., silly-demo)
-    --builder = "docker"           # Image builder; currently supported are: `docker` and `kaniko`
-    --skip-image-build = false     # Whether to skip the image build
-] {
+def "main run unit_tests" [] {
 
-    if not $skip-image-build {
-        (
-            main build image $tag
-                --registry $registry --image $image
-                --builder "kaniko"
-        )
-    }
+    echo "Running unit tests"
+
+}
+
+def "main run gitops" [] {
+
+    echo "FIXME:"
 
 }
 
