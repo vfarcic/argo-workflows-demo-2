@@ -42,20 +42,24 @@ spec:
             value: "{{workflow.parameters.repo}}"
       - name: generate-tag
         template: date-tag
-      # - name: execute
-      #   template: execute
-      #   arguments:
-      #     parameters:
-      #     - name: tag
-      #       value: "{{tasks.generate-tag.outputs.result}}"
-      #   dependencies: [checkout, generate-tag]
-      - name: build-image
-        template: kaniko
+      - name: execute
+        template: execute
         arguments:
           parameters:
+          - name: tag
+            value: "{{tasks.generate-tag.outputs.result}}"
+          - name: registry
+            value: "{{workflow.parameters.registry}}"
           - name: image
-            value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
+            value: "{{workflow.parameters.image}}"
         dependencies: [checkout, generate-tag]
+      # - name: build-image
+      #   template: kaniko
+      #   arguments:
+      #     parameters:
+      #     - name: image
+      #       value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
+      #   dependencies: [checkout, generate-tag]
       # # FIXME: Remove
       # - name: show-files
       #   dependencies: [checkout]
@@ -129,47 +133,52 @@ spec:
         limits:
           memory: 128Mi
           cpu: 100m
-  # - name: execute
-  #   inputs:
-  #     parameters:
-  #     - name: tag
-  #   script:
-  #     image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.4
-  #     workingDir: /workdir
-  #     command: [sh]
-  #     source: |
-  #       devbox run --config devbox-ci.json -- chmod +x dot.nu
-  #       devbox run --config devbox-ci.json -- ./dot.nu run ci {{inputs.parameters.tag}}
-  #     volumeMounts:
-  #     - name: workdir
-  #       mountPath: /workdir
-  #     resources:
-  #       limits:
-  #         memory: 1024Mi
-  #         cpu: 1000m
-  - name: kaniko
+  - name: execute
     inputs:
       parameters:
+      - name: tag
+      - name: registry
       - name: image
     script:
-      image: gcr.io/kaniko-project/executor:v1.23.2-debug
+      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.5
       workingDir: /workdir
-      command: ["sh"]
+      command: [sh]
       source: |
-        /kaniko/executor \
-            --dockerfile=Dockerfile \
-            --context=. \
-            --destination={{inputs.parameters.image}}
+        devbox run --config devbox-ci.json -- chmod +x dot.nu
+        devbox run --config devbox-ci.json -- \
+          ./dot.nu run ci {{inputs.parameters.tag}} \
+          --registry {{inputs.parameters.registry}} \
+          --image {{inputs.parameters.image}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir
-      - name: registry-creds
-        # mountPath: /creds
-        mountPath: /kaniko/.docker
       resources:
         limits:
           memory: 1024Mi
           cpu: 1000m
+  # - name: kaniko
+  #   inputs:
+  #     parameters:
+  #     - name: image
+  #   script:
+  #     image: gcr.io/kaniko-project/executor:v1.23.2-debug
+  #     workingDir: /workdir
+  #     command: ["sh"]
+  #     source: |
+  #       /kaniko/executor \
+  #           --dockerfile=Dockerfile \
+  #           --context=. \
+  #           --destination={{inputs.parameters.image}}
+  #     volumeMounts:
+  #     - name: workdir
+  #       mountPath: /workdir
+  #     - name: registry-creds
+  #       # mountPath: /creds
+  #       mountPath: /kaniko/.docker
+  #     resources:
+  #       limits:
+  #         memory: 1024Mi
+  #         cpu: 1000m
   # FIXME: Remove
   # - name: kaniko
   #   inputs:

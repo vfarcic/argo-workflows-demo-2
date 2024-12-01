@@ -6,9 +6,18 @@ source  scripts/image.nu
 
 def main [] {}
 
-def "main run ci" [tag: string] {
+def "main run ci" [
+    tag: string                    # The tag of the image (e.g., 0.0.1)
+    --registry = "ghcr.io/vfarcic" # Image registry (e.g., ghcr.io/vfarcic)
+    --image = "silly-demo"         # Image name (e.g., silly-demo)
+    --builder = "docker"           # Image builder; currently supported are: `docker` and `kaniko`    
+] {
 
-    main build image $tag
+    (
+        main build image $tag
+            --registry $registry --image $image
+            --builder "kaniko"
+    )
 
 }
 
