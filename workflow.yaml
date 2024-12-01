@@ -21,12 +21,12 @@ spec:
     parameters:
     - name: repo
       value: https://github.com/vfarcic/argo-workflows-demo-2
-    - name: registry
-      value: ghcr.io
-    - name: registry-user
-      value: vfarcic
-    - name: image
-      value: argo-workflows-demo-2
+    # - name: registry
+    #   value: ghcr.io
+    # - name: registry-user
+    #   value: vfarcic
+    # - name: image
+    #   value: argo-workflows-demo-2
   templates:
   - name: ci
     dag:
@@ -37,11 +37,15 @@ spec:
           parameters:
           - name: repo
             value: "{{workflow.parameters.repo}}"
+      - name: generate-tag
+        template: date-tag
       - name: execute
         template: execute
-        dependencies: [checkout]
-      # - name: generate-tag
-      #   template: date-tag
+        arguments:
+          parameters:
+          - name: tag
+            value: "{{tasks.generate-tag.outputs.result}}"
+        dependencies: [checkout, generate-tag]
       # # FIXME: Remove
       # - name: show-files
       #   dependencies: [checkout]
@@ -88,16 +92,16 @@ spec:
   #       limits:
   #         memory: 32Mi
   #         cpu: 100m
-  # - name: date-tag
-  #   script:
-  #     image: alpine
-  #     command: [sh]
-  #     source: |
-  #       echo "v$(date +%Y%m%d%H%M%S)"
-  #     resources:
-  #       limits:
-  #         memory: 32Mi
-  #         cpu: 100m
+  - name: date-tag
+    script:
+      image: alpine
+      command: [sh]
+      source: |
+        echo "v$(date +%Y%m%d%H%M%S)"
+      resources:
+        limits:
+          memory: 32Mi
+          cpu: 100m
   - name: checkout
     inputs:
       parameters:
@@ -116,18 +120,16 @@ spec:
           memory: 128Mi
           cpu: 100m
   - name: execute
-    # inputs:
-    #   parameters:
-    #   - name: repo
+    inputs:
+      parameters:
+      - name: tag
     script:
       image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.4
       workingDir: /workdir
       command: [sh]
       source: |
-        devbox run --config devbox-ci.json -- cat dot.nu
-        devbox run --config devbox-ci.json -- ls scripts/
         devbox run --config devbox-ci.json -- chmod +x dot.nu
-        devbox run --config devbox-ci.json -- ./dot.nu run ci
+        devbox run --config devbox-ci.json -- ./dot.nu run ci {{inputs.parameters.tag}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir

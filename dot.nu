@@ -6,9 +6,10 @@ source  scripts/image.nu
 
 def main [] {}
 
-def "main run ci" [] {
+def "main run ci" [tag: string] {
 
-    main build image $tag
+    print $tag
+    # main build image $tag
 
 }
 
