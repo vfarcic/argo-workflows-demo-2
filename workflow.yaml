@@ -9,6 +9,10 @@ metadata:
       This is a simple CI example.
 spec:
   entrypoint: ci
+  volumes:
+  - name: registry-creds
+    secret:
+      secretName: registry-creds
   volumeClaimTemplates:
   - metadata:
       name: workdir
@@ -153,15 +157,20 @@ spec:
       workingDir: /workdir
       command: ["sh"]
       source: |
+        ls /kaniko/
+        ls /kaniko/.docker
+        cat /kaniko/.docker/config.json
+
         /kaniko/executor \
             --dockerfile=Dockerfile \
             --context=. \
             --destination={{inputs.parameters.image}} \
-            --cache=false \
-            --no-push
+            --cache=false
       volumeMounts:
       - name: workdir
         mountPath: /workdir
+      - name: registry-creds
+        mountPath: /kaniko/.docker
       resources:
         limits:
           memory: 1024Mi
