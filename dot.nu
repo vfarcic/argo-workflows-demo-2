@@ -2,12 +2,14 @@
 
 source scripts/kubernetes.nu
 source scripts/registry.nu
+source  scripts/image.nu
 
 def main [] {}
 
 def "main run ci" [] {
 
-    print "This is CI!!!"
+    main build image $tag
+
 }
 
 def "main create demo" [] {

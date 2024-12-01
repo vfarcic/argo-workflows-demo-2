@@ -19,6 +19,8 @@ spec:
           storage: 128Mi
   arguments:
     parameters:
+    - name: repo
+      value: https://github.com/vfarcic/argo-workflows-demo-2
     - name: registry
       value: ghcr.io
     - name: registry-user
@@ -34,7 +36,7 @@ spec:
         arguments:
           parameters:
           - name: repo
-            value: https://github.com/vfarcic/silly-demo
+            value: "{{workflow.parameters.repo}}"
       - name: execute
         template: execute
         dependencies: [checkout]
@@ -122,6 +124,8 @@ spec:
       workingDir: /workdir
       command: [sh]
       source: |
+        devbox run --config devbox-ci.json -- cat dot.nu
+        devbox run --config devbox-ci.json -- ls scripts/
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         devbox run --config devbox-ci.json -- ./dot.nu run ci
       volumeMounts:
