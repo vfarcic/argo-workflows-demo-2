@@ -1,0 +1,144 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: ci-
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
+  annotations:
+    workflows.argoproj.io/description: |
+      This is a simple CI example.
+spec:
+  entrypoint: ci
+  volumeClaimTemplates:
+  - metadata:
+      name: workdir
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 128Mi
+  arguments:
+    parameters:
+    - name: registry
+      value: ghcr.io
+    - name: registry-user
+      value: vfarcic
+    - name: image
+      value: argo-workflows-demo-2
+  templates:
+  - name: ci
+    dag:
+      tasks:
+      - name: checkout
+        template: checkout
+        arguments:
+          parameters:
+          - name: repo
+            value: https://github.com/vfarcic/silly-demo
+      # - name: generate-tag
+      #   template: date-tag
+      # # FIXME: Remove
+      # - name: show-files
+      #   dependencies: [checkout]
+      #   template: show-files
+      # - name: unit-tests
+      #   dependencies: [checkout]
+      #   template: print-message
+      #   arguments:
+      #     parameters:
+      #     - name: message
+      #       value: "FIXME: unit-tests"
+      # - name: image-build
+      #   dependencies: [checkout, generate-tag]
+      #   template: print-message
+      #   arguments:
+      #     parameters:
+      #     - name: message
+      #       value: "FIXME: docker image build --tag {{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
+      # - name: image-push
+      #   dependencies: [image-build]
+      #   template: print-message
+      #   arguments:
+      #     parameters:
+      #     - name: message
+      #       value: "FIXME: image-push"
+      # - name: deploy
+      #   dependencies: [image-push]
+      #   template: print-message
+      #   arguments:
+      #     parameters:
+      #     - name: message
+      #       value: "FIXME: deploy"
+
+  # - name: print-message
+  #   inputs:
+  #     parameters:
+  #     - name: message
+  #   script:
+  #     image: alpine
+  #     command: [sh]
+  #     source: |
+  #       echo {{inputs.parameters.message}}
+  #     resources:
+  #       limits:
+  #         memory: 32Mi
+  #         cpu: 100m
+  # - name: date-tag
+  #   script:
+  #     image: alpine
+  #     command: [sh]
+  #     source: |
+  #       echo "v$(date +%Y%m%d%H%M%S)"
+  #     resources:
+  #       limits:
+  #         memory: 32Mi
+  #         cpu: 100m
+  - name: checkout
+    inputs:
+      parameters:
+      - name: repo
+    script:
+      image: cgr.dev/chainguard/git
+      workingDir: /workdir
+      command: [sh]
+      source: |
+        git clone {{inputs.parameters.repo}} --single-branch --depth 1 .
+      volumeMounts:
+      - name: workdir
+        mountPath: /workdir
+      resources:
+        limits:
+          memory: 128Mi
+          cpu: 100m
+  # FIXME: Remove
+  # - name: kaniko
+  #   inputs:
+  #     parameters:
+  #       - name: oci-image
+  #         value: "ghcr.io/vfarcic/argo-workflows-demo-2"
+  #       - name: oci-tag
+  #         value: "v0.0.1"
+  #   container:
+  #     image: gcr.io/kaniko-project/executor:latest
+  #     workingDir: /workdir
+  #     args: ["--context=.", "--destination=ghcr.io/vfarcic/argo-workflows-demo-2:v0.0.1", "--tar-path=/workdir/.tar"]
+  #     volumeMounts:
+  #       - name: workdir
+  #         mountPath: /workdir
+  # FIXME: Remove
+  # - name: show-files
+  #   script:
+  #     image: alpine
+  #     workingDir: /workdir
+  #     command: ["sh"]
+  #     source: |
+  #       ls
+  #     volumeMounts:
+  #     - name: workdir
+  #       mountPath: /workdir
+  #     resources:
+  #       limits:
+  #         memory: 32Mi
+  #         cpu: 100m
+
+
