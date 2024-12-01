@@ -5,8 +5,7 @@ metadata:
   labels:
     workflows.argoproj.io/archive-strategy: "false"
   annotations:
-    workflows.argoproj.io/description: |
-      This is a simple CI example.
+    workflows.argoproj.io/description: Silly CI
 spec:
   entrypoint: ci
   volumes:
@@ -157,19 +156,15 @@ spec:
       workingDir: /workdir
       command: ["sh"]
       source: |
-        ls /kaniko/
-        ls /kaniko/.docker
-        cat /kaniko/.docker/config.json
-
         /kaniko/executor \
             --dockerfile=Dockerfile \
             --context=. \
-            --destination={{inputs.parameters.image}} \
-            --cache=false
+            --destination={{inputs.parameters.image}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir
       - name: registry-creds
+        # mountPath: /creds
         mountPath: /kaniko/.docker
       resources:
         limits:
