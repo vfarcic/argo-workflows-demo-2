@@ -14,7 +14,13 @@ def "main run unit_tests" [] {
 
 def "main run gitops" [] {
 
-    echo "FIXME:"
+    echo "Modifying the GitOps repository..."
+
+}
+
+def "main run linter" [] {
+
+    echo "Linting..."
 
 }
 

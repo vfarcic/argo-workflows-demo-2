@@ -61,53 +61,21 @@ spec:
           #   value: "{{workflow.parameters.registry}}"
           # - name: image
           #   value: "{{workflow.parameters.image}}"
-        dependencies: [checkout, generate-tag]
-      # # FIXME: Remove
-      # - name: show-files
-      #   dependencies: [checkout]
-      #   template: show-files
-      # - name: unit-tests
-      #   dependencies: [checkout]
-      #   template: print-message
-      #   arguments:
-      #     parameters:
-      #     - name: message
-      #       value: "FIXME: unit-tests"
-      # - name: image-build
-      #   dependencies: [checkout, generate-tag]
-      #   template: print-message
-      #   arguments:
-      #     parameters:
-      #     - name: message
-      #       value: "FIXME: docker image build --tag {{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-      # - name: image-push
-      #   dependencies: [image-build]
-      #   template: print-message
-      #   arguments:
-      #     parameters:
-      #     - name: message
-      #       value: "FIXME: image-push"
-      # - name: deploy
-      #   dependencies: [image-push]
-      #   template: print-message
-      #   arguments:
-      #     parameters:
-      #     - name: message
-      #       value: "FIXME: deploy"
-
-  # - name: print-message
-  #   inputs:
-  #     parameters:
-  #     - name: message
-  #   script:
-  #     image: alpine
-  #     command: [sh]
-  #     source: |
-  #       echo {{inputs.parameters.message}}
-  #     resources:
-  #       limits:
-  #         memory: 32Mi
-  #         cpu: 100m
+        dependencies: [checkout]
+      - name: run-gitops
+        template: execute
+        arguments:
+          parameters:
+          - name: target
+            value: "run gitops"
+        dependencies: [build-image]
+      - name: run-linter
+        template: execute
+        arguments:
+          parameters:
+          - name: target
+            value: "run linter"
+        dependencies: [checkout]
   - name: date-tag
     script:
       image: alpine
@@ -140,8 +108,11 @@ spec:
       parameters:
       - name: target
       - name: tag
+        value: ""
       - name: registry
+        value: ""
       - name: image
+        value: ""
     script:
       image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.5
       workingDir: /workdir
@@ -150,7 +121,7 @@ spec:
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         
         devbox run --config devbox-ci.json -- \
-          ./dot.nu run {{inputs.parameters.target}}
+          ./dot.nu {{inputs.parameters.target}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir
@@ -182,35 +153,3 @@ spec:
         limits:
           memory: 1024Mi
           cpu: 1000m
-  # FIXME: Remove
-  # - name: kaniko
-  #   inputs:
-  #     parameters:
-  #       - name: oci-image
-  #         value: "ghcr.io/vfarcic/argo-workflows-demo-2"
-  #       - name: oci-tag
-  #         value: "v0.0.1"
-  #   container:
-  #     image: gcr.io/kaniko-project/executor:latest
-  #     workingDir: /workdir
-  #     args: ["--context=.", "--destination=ghcr.io/vfarcic/argo-workflows-demo-2:v0.0.1", "--tar-path=/workdir/.tar"]
-  #     volumeMounts:
-  #       - name: workdir
-  #         mountPath: /workdir
-  # FIXME: Remove
-  # - name: show-files
-  #   script:
-  #     image: alpine
-  #     workingDir: /workdir
-  #     command: ["sh"]
-  #     source: |
-  #       ls
-  #     volumeMounts:
-  #     - name: workdir
-  #       mountPath: /workdir
-  #     resources:
-  #       limits:
-  #         memory: 32Mi
-  #         cpu: 100m
-
-
