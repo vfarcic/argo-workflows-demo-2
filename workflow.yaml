@@ -42,6 +42,13 @@ spec:
             value: "{{workflow.parameters.repo}}"
       - name: generate-tag
         template: date-tag
+      - name: build-image
+        template: kaniko
+        arguments:
+          parameters:
+          - name: image
+            value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
+        dependencies: [checkout, generate-tag]
       - name: execute
         template: execute
         arguments:
@@ -52,14 +59,7 @@ spec:
             value: "{{workflow.parameters.registry}}"
           - name: image
             value: "{{workflow.parameters.image}}"
-        dependencies: [checkout, generate-tag]
-      # - name: build-image
-      #   template: kaniko
-      #   arguments:
-      #     parameters:
-      #     - name: image
-      #       value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-      #   dependencies: [checkout, generate-tag]
+        dependencies: [build-image]
       # # FIXME: Remove
       # - name: show-files
       #   dependencies: [checkout]
@@ -145,6 +145,7 @@ spec:
       command: [sh]
       source: |
         devbox run --config devbox-ci.json -- chmod +x dot.nu
+        
         devbox run --config devbox-ci.json -- \
           ./dot.nu run ci {{inputs.parameters.tag}} \
           --registry {{inputs.parameters.registry}} \
@@ -152,33 +153,34 @@ spec:
       volumeMounts:
       - name: workdir
         mountPath: /workdir
+      - name: registry-creds
+        mountPath: /kaniko/.docker
       resources:
         limits:
           memory: 1024Mi
           cpu: 1000m
-  # - name: kaniko
-  #   inputs:
-  #     parameters:
-  #     - name: image
-  #   script:
-  #     image: gcr.io/kaniko-project/executor:v1.23.2-debug
-  #     workingDir: /workdir
-  #     command: ["sh"]
-  #     source: |
-  #       /kaniko/executor \
-  #           --dockerfile=Dockerfile \
-  #           --context=. \
-  #           --destination={{inputs.parameters.image}}
-  #     volumeMounts:
-  #     - name: workdir
-  #       mountPath: /workdir
-  #     - name: registry-creds
-  #       # mountPath: /creds
-  #       mountPath: /kaniko/.docker
-  #     resources:
-  #       limits:
-  #         memory: 1024Mi
-  #         cpu: 1000m
+  - name: kaniko
+    inputs:
+      parameters:
+      - name: image
+    script:
+      image: gcr.io/kaniko-project/executor:v1.23.2-debug
+      workingDir: /workdir
+      command: ["sh"]
+      source: |
+        /kaniko/executor \
+            --dockerfile=Dockerfile \
+            --context=. \
+            --destination={{inputs.parameters.image}}
+      volumeMounts:
+      - name: workdir
+        mountPath: /workdir
+      - name: registry-creds
+        mountPath: /kaniko/.docker
+      resources:
+        limits:
+          memory: 1024Mi
+          cpu: 1000m
   # FIXME: Remove
   # - name: kaniko
   #   inputs:
