@@ -2,7 +2,8 @@
 
 source scripts/kubernetes.nu
 source scripts/registry.nu
-source  scripts/image.nu
+source scripts/image.nu
+source scripts/argo-events.nu
 
 def main [] {}
 

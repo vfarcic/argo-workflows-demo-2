@@ -130,7 +130,7 @@ spec:
       resources:
         limits:
           memory: 1024Mi
-          cpu: 1000m
+          cpu: 100m
   - name: kaniko
     inputs:
       parameters:
@@ -152,4 +152,4 @@ spec:
       resources:
         limits:
           memory: 1024Mi
-          cpu: 1000m
+          cpu: 1
