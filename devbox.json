@@ -6,7 +6,8 @@
     "nushell@0.100.0",
     "zellij@0.41.2",
     "argo@3.5.12",
-    "teller@2.0.7"
+    "teller@2.0.7",
+    "go@1.23.2"
   ],
   "shell": {
     "init_hook": [],
