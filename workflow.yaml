@@ -120,8 +120,6 @@ spec:
       workingDir: /workdir
       command: [sh]
       source: |
-        devbox run --config devbox-ci.json -- go version
-
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         
         devbox run --config devbox-ci.json -- ./dot.nu {{inputs.parameters.target}} {{inputs.parameters.image}}
