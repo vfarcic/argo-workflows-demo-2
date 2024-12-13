@@ -122,7 +122,7 @@ spec:
       source: |
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         
-        devbox run --config devbox-ci.json -- ./dot.nu {{inputs.parameters.target}} {{inputs.parameters.target}}
+        devbox run --config devbox-ci.json -- ./dot.nu {{inputs.parameters.target}} {{inputs.parameters.image}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir
