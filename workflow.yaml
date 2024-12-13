@@ -68,6 +68,8 @@ spec:
           parameters:
           - name: target
             value: "run gitops"
+          - name: tag
+            value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
         dependencies: [build-image]
       - name: run-linter
         template: execute
@@ -120,8 +122,7 @@ spec:
       source: |
         devbox run --config devbox-ci.json -- chmod +x dot.nu
         
-        devbox run --config devbox-ci.json -- \
-          ./dot.nu {{inputs.parameters.target}}
+        devbox run --config devbox-ci.json -- ./dot.nu {{inputs.parameters.target}} {{inputs.parameters.target}}
       volumeMounts:
       - name: workdir
         mountPath: /workdir

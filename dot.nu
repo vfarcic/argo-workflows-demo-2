@@ -9,13 +9,17 @@ def main [] {}
 
 def "main run unit_tests" [] {
 
-    echo "Running unit tests"
+    go test -v $"(pwd)/..."
 
 }
 
-def "main run gitops" [] {
+def "main run gitops" [
+    image: string # The full image (e.g., `ghcr.io/vfarcic/silly-demo:0.0.1`)
+] {
 
-    echo "Modifying the GitOps repository..."
+    open app/deployment.yaml
+        | upsert spec.template.spec.containers.0.image $image
+        | save app/deployment.yaml --force
 
 }
 
@@ -25,7 +29,7 @@ def "main run linter" [] {
 
 }
 
-def "main create demo" [] {
+def "main setup demo" [] {
 
     rm --force .env
 
