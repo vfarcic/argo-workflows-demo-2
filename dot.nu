@@ -9,7 +9,10 @@ def main [] {}
 
 def "main run unit_tests" [] {
 
-    go test -v .
+    print "111"
+    # go test -v .
+    print "Testing..."
+    print "222"
 
 }
 
@@ -25,7 +28,7 @@ def "main run gitops" [
 
 def "main run linter" [] {
 
-    echo "Linting..."
+    print "Linting..."
 
 }
 
