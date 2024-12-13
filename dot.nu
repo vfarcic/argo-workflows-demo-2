@@ -9,7 +9,9 @@ def main [] {}
 
 def "main run unit_tests" [] {
 
-    print $"go test -v $\"(pwd)/...\""
+    print "111"
+    go test -v $"(pwd)/..."
+    print "222"
 
 }
 
