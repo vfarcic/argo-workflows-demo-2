@@ -9,7 +9,7 @@ def main [] {}
 
 def "main run unit_tests" [] {
 
-    go test -v $"(pwd)/..."
+    print $"go test -v $\"(pwd)/...\""
 
 }
 
