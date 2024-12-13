@@ -121,7 +121,6 @@ spec:
       command: [sh]
       source: |
         devbox run -- chmod +x dot.nu
-        
         devbox run -- ./dot.nu {{inputs.parameters.target}} {{inputs.parameters.image}}
       volumeMounts:
       - name: workdir

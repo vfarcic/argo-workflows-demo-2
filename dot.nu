@@ -10,8 +10,7 @@ def main [] {}
 def "main run unit_tests" [] {
 
     print "111"
-    # go test -v .
-    print "Testing..."
+    go test -v .
     print "222"
 
 }
