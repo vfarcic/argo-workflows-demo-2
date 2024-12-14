@@ -48,7 +48,7 @@ spec:
           parameters:
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-        dependencies: [generate-tag, run-unit-tests]
+        dependencies: [generate-tag, run-unit-tests, run-linter]
       - name: run-unit-tests
         template: execute
         arguments:
@@ -64,7 +64,7 @@ spec:
             value: "run gitops"
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-        dependencies: [checkout, generate-tag]
+        dependencies: [build-image]
       - name: run-linter
         template: execute
         arguments:
@@ -78,7 +78,7 @@ spec:
           parameters:
           - name: tag
             value: "{{tasks.generate-tag.outputs.result}}"
-        dependencies: [gitops, generate-tag]
+        dependencies: [gitops]
   - name: date-tag
     script:
       image: alpine
