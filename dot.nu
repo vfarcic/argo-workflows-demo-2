@@ -6,6 +6,7 @@ source scripts/image.nu
 source scripts/argo-workflows.nu
 source scripts/argo-events.nu
 source scripts/github.nu
+source scripts/get-hyperscaler.nu
 
 def main [] {}
 
@@ -35,7 +36,9 @@ def "main setup" [] {
 
     rm --force .env
 
-    main create kubernetes kind
+    let hyperscaler = main get hyperscaler
+
+    main create kubernetes $hyperscaler
 
     let registry_data = main get registry
 
@@ -58,6 +61,6 @@ def "main setup" [] {
 
 def "main destroy" [] {
 
-    main destroy kubernetes kind
+    main destroy kubernetes $env.HYPERSCALER
 
 }

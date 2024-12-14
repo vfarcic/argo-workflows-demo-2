@@ -34,9 +34,4 @@ def "main apply argoevents" [] {
             --filename https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
     )
 
-    (
-        kubectl apply --namespace argo-events
-            --filename https://raw.githubusercontent.com/argoproj/argo-events/stable/examples/sensors/webhook.yaml
-    )
-
 }
