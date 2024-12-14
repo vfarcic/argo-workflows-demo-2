@@ -3,7 +3,9 @@
 source scripts/kubernetes.nu
 source scripts/registry.nu
 source scripts/image.nu
+source scripts/argo-workflows.nu
 source scripts/argo-events.nu
+source scripts/github.nu
 
 def main [] {}
 
@@ -29,26 +31,32 @@ def "main run linter" [] {
 
 }
 
-def "main setup demo" [] {
+def "main setup" [] {
 
     rm --force .env
 
     main create kubernetes kind
 
-    kubectl create namespace argo
+    let registry_data = main get registry
+
+    let github_data = main get github
 
     (
-        kubectl --namespace argo apply 
-            --filename "https://github.com/argoproj/argo-workflows/releases/download/v3.6.0/quick-start-minimal.yaml"
+        main apply argoworkflows
+            $github_data.token
+            $registry_data.user
+            $registry_data.password
+            $registry_data.email
+            --registry $registry_data.server 
     )
 
-    let registry_data = main get registry --create_secret true
+    main apply argoevents
 
     kubectl create namespace a-team
 
 }
 
-def "main destroy demo" [] {
+def "main destroy" [] {
 
     main destroy kubernetes kind
 

@@ -35,7 +35,7 @@ spec:
     dag:
       tasks:
       - name: checkout
-        template: checkout
+        template: git-checkout
         arguments:
           parameters:
           - name: repo
@@ -55,14 +55,8 @@ spec:
           parameters:
           - name: target
             value: "run unit_tests"
-          # - name: tag
-          #   value: "{{tasks.generate-tag.outputs.result}}"
-          # - name: registry
-          #   value: "{{workflow.parameters.registry}}"
-          # - name: image
-          #   value: "{{workflow.parameters.image}}"
         dependencies: [checkout]
-      - name: run-gitops
+      - name: gitops
         template: execute
         arguments:
           parameters:
@@ -70,7 +64,7 @@ spec:
             value: "run gitops"
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-        dependencies: [build-image]
+        dependencies: [checkout]
       - name: run-linter
         template: execute
         arguments:
@@ -78,6 +72,13 @@ spec:
           - name: target
             value: "run linter"
         dependencies: [checkout]
+      - name: push
+        template: git-push
+        arguments:
+          parameters:
+          - name: tag
+            value: "{{tasks.generate-tag.outputs.result}}"
+        dependencies: [gitops]
   - name: date-tag
     script:
       image: alpine
@@ -88,7 +89,7 @@ spec:
         limits:
           memory: 32Mi
           cpu: 100m
-  - name: checkout
+  - name: git-checkout
     inputs:
       parameters:
       - name: repo
@@ -97,7 +98,34 @@ spec:
       workingDir: /workdir
       command: [sh]
       source: |
-        git clone {{inputs.parameters.repo}} --single-branch --depth 1 .
+        git clone {{inputs.parameters.repo}} .
+      volumeMounts:
+      - name: workdir
+        mountPath: /workdir
+      resources:
+        limits:
+          memory: 128Mi
+          cpu: 100m
+  - name: git-push
+    inputs:
+      parameters:
+      - name: tag
+    script:
+      image: cgr.dev/chainguard/git
+      workingDir: /workdir
+      command: [sh]
+      source: |
+        git config --global --add safe.directory /workdir
+        git config --global url.https://$GITHUB_PATH@github.com/.insteadOf https://github.com/
+        git add .
+        git commit -m "Tag: {{inputs.parameters.tag}}"
+        git push
+      env:
+      - name: GITHUB_PATH
+        valueFrom:
+          secretKeyRef:
+            name: registry-creds
+            key: password
       volumeMounts:
       - name: workdir
         mountPath: /workdir

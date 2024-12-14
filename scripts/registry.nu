@@ -1,6 +1,11 @@
 #!/usr/bin/env nu
 
-def --env "main get registry" [--create_secret = false] {
+# Returns registry information.
+#
+# Example: `{server: "my-server", user: "my-user", email: "my-email", password: "my-password"}`
+def --env "main get registry" []: [
+    string -> record 
+] {
 
     mut server = ""
     if "REGISTRY_SERVER" not-in $env {
@@ -35,16 +40,5 @@ def --env "main get registry" [--create_secret = false] {
     $"export REGISTRY_PASSWORD=($password)\n" | save --append .env
 
     {server: $server, user: $user, email: $email, password: $password}
-
-    if $create_secret {
-        (
-            kubectl --namespace argo create secret
-                docker-registry regcred
-                $"--docker-server=($server)"
-                --docker-username=($user)
-                --docker-password=($password)
-                --docker-email=($email)
-        )
-    }
 
 }
