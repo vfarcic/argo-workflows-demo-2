@@ -70,7 +70,7 @@ def "main build image_ci" [
 ] {
 
     (
-        main image build $tag --image argo-workflows-demo-2-ci
+        main build image $tag --image argo-workflows-demo-2-ci
             --dockerfile Dockerfile-ci
     )
 

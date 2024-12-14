@@ -1,3 +1,4 @@
 /.env
 /kubeconfig*.yaml
 /devbox.lock
+/gke_gcloud_auth_plugin_cache
