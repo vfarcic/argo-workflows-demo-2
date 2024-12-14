@@ -95,7 +95,6 @@ spec:
       - name: repo
     script:
       image: cgr.dev/chainguard/git:latest-root-dev
-      # image: alpine
       workingDir: /workdir
       command: [sh]
       source: |
@@ -116,7 +115,7 @@ spec:
       workingDir: /workdir/source
       command: [sh]
       source: |
-        git config --global --add safe.directory /workdir
+        git config --global --add safe.directory /workdir/source
         git config --global url.https://$GITHUB_PATH@github.com/.insteadOf https://github.com/
         git config --global user.email "argo-workflows@devopstoolkit.live"
         git config --global user.name "Argo Workflows"
@@ -147,7 +146,7 @@ spec:
       - name: image
         value: ""
     script:
-      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.12
+      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.2
       workingDir: /workdir/source
       command: [sh]
       source: |

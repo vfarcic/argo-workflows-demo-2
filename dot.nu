@@ -70,26 +70,8 @@ def "main build image_ci" [
 ] {
 
     (
-        docker buildx build
-            --platform linux/amd64 --file Dockerfile-ci
-            --tag $"ghcr.io/vfarcic/argo-workflows-demo-2-ci:($tag)"
-            .
-    )
-
-    (
-        docker image tag
-            $"ghcr.io/vfarcic/argo-workflows-demo-2-ci:($tag)"
-            "ghcr.io/vfarcic/argo-workflows-demo-2-ci:latest"
-    )
-
-    (
-        docker image push
-            $"ghcr.io/vfarcic/argo-workflows-demo-2-ci:($tag)"
-    )
-
-    (
-        docker image push
-            $"ghcr.io/vfarcic/argo-workflows-demo-2-ci:latest"
+        main image build $tag --image argo-workflows-demo-2-ci
+            --dockerfile Dockerfile-ci
     )
 
 }
