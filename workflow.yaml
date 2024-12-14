@@ -48,7 +48,7 @@ spec:
           parameters:
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-        dependencies: [checkout, generate-tag]
+        dependencies: [generate-tag, run-unit-tests]
       - name: run-unit-tests
         template: execute
         arguments:
@@ -64,7 +64,7 @@ spec:
             value: "run gitops"
           - name: image
             value: "{{workflow.parameters.registry}}/{{workflow.parameters.registry-user}}/{{workflow.parameters.image}}:{{tasks.generate-tag.outputs.result}}"
-        dependencies: [checkout]
+        dependencies: [checkout, generate-tag]
       - name: run-linter
         template: execute
         arguments:
@@ -78,7 +78,7 @@ spec:
           parameters:
           - name: tag
             value: "{{tasks.generate-tag.outputs.result}}"
-        dependencies: [gitops]
+        dependencies: [gitops, generate-tag]
   - name: date-tag
     script:
       image: alpine
@@ -125,7 +125,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: registry-creds
-            key: password
+            key: github_pat
       volumeMounts:
       - name: workdir
         mountPath: /workdir

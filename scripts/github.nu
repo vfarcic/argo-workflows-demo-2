@@ -16,7 +16,7 @@ def --env "main get github" [] {
     if "GITHUB_USER" in $env {
         $github_user = $env.GITHUB_USER
     } else if "REGISTRY_USER" in $env {
-            $github_user = $env.GITHUB_USER
+            $github_user = $env.REGISTRY_USER
     } else {
         $github_user = input $"(ansi green_bold)Enter GitHub user or organization where you forked the repo:(ansi reset)"
     }

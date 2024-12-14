@@ -9,7 +9,7 @@ def --env "main get registry" []: [
 
     mut server = ""
     if "REGISTRY_SERVER" not-in $env {
-        $server = input $"(ansi green_bold)Enter container image registry user (e.g., `ghcr.io`):(ansi reset)"
+        $server = input $"(ansi green_bold)Enter container image registry user \(e.g., `ghcr.io`\):(ansi reset)"
     } else {
         $server = $env.REGISTRY_SERVER
     }
