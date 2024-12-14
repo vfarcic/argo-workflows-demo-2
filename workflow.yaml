@@ -117,6 +117,8 @@ spec:
       source: |
         git config --global --add safe.directory /workdir
         git config --global url.https://$GITHUB_PATH@github.com/.insteadOf https://github.com/
+        git config --global user.email "argo-workflows@devopstoolkit.live"
+        git config --global user.name "Argo Workflows"
         git add .
         git commit -m "Tag: {{inputs.parameters.tag}}"
         git push
