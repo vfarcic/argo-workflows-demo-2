@@ -94,11 +94,12 @@ spec:
       parameters:
       - name: repo
     script:
-      image: cgr.dev/chainguard/git
+      image: cgr.dev/chainguard/git:latest-root-dev
+      # image: alpine
       workingDir: /workdir
       command: [sh]
       source: |
-        git clone {{inputs.parameters.repo}} .
+        git clone {{inputs.parameters.repo}} source
       volumeMounts:
       - name: workdir
         mountPath: /workdir
@@ -112,7 +113,7 @@ spec:
       - name: tag
     script:
       image: cgr.dev/chainguard/git
-      workingDir: /workdir
+      workingDir: /workdir/source
       command: [sh]
       source: |
         git config --global --add safe.directory /workdir
@@ -146,8 +147,8 @@ spec:
       - name: image
         value: ""
     script:
-      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.11
-      workingDir: /workdir
+      image: ghcr.io/vfarcic/argo-workflows-demo-2-ci:0.0.12
+      workingDir: /workdir/source
       command: [sh]
       source: |
         devbox run -- chmod +x dot.nu
@@ -167,7 +168,7 @@ spec:
       - name: image
     script:
       image: gcr.io/kaniko-project/executor:v1.23.2-debug
-      workingDir: /workdir
+      workingDir: /workdir/source
       command: ["sh"]
       source: |
         /kaniko/executor \
