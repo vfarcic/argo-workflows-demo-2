@@ -23,7 +23,7 @@ spec:
     spec:
       shareProcessNamespace: true
       containers:
-      - image: ghcr.io/vfarcic/argo-workflows-demo-2:v20241214201540
+      - image: ghcr.io/vfarcic/argo-workflows-demo-2:v20241218142844
         livenessProbe:
           httpGet:
             path: /
