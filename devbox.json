@@ -8,7 +8,8 @@
     "argo@3.5.12",
     "teller@2.0.7",
     "go@1.23.2",
-    "path:gcloud#google-cloud-sdk"
+    "path:gcloud#google-cloud-sdk",
+    "kubernetes-helm@3.16.3"
   ],
   "shell": {
     "init_hook": [],

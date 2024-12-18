@@ -7,6 +7,7 @@ source scripts/argo-workflows.nu
 source scripts/argo-events.nu
 source scripts/github.nu
 source scripts/get-hyperscaler.nu
+source scripts/ingress.nu
 
 def main [] {}
 
@@ -39,6 +40,8 @@ def "main setup" [] {
     let hyperscaler = main get hyperscaler
 
     main create kubernetes $hyperscaler
+
+    let ingress_data = main apply ingress traefik --hyperscaler $hyperscaler
 
     let registry_data = main get registry
 
