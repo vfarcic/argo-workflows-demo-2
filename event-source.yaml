@@ -15,7 +15,7 @@ spec:
   github:
     example:
       repositories:
-        - owner: vfarcic
+        - owner: argoproj
           names:
             - argo-workflows-demo-2
       # Github application auth. Instead of using personal token `apiToken` use app PEM            
@@ -28,7 +28,7 @@ spec:
       # Github will send events to following port and endpoint
       webhook:
         # endpoint to listen to events on
-        endpoint: /example
+        endpoint: /push
         # port to run internal HTTP server on
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
