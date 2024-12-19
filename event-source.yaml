@@ -6,14 +6,11 @@ metadata:
 spec:
   service:
     ports:
-      - name: example
+      - name: push
         port: 12000
         targetPort: 12000
-      # - name: example-without-api-credentials
-      #   port: 13000
-      #   targetPort: 13000
   github:
-    example:
+    push:
       repositories:
         - owner: vfarcic
           names:
@@ -37,7 +34,7 @@ spec:
         # This url must be reachable from outside the cluster.
         # The name for the service is in `<event-source-name>-eventsource-svc` format.
         # You will need to create an Ingress or Openshift Route for the event-source service so that it can be reached from GitHub.
-        url: http://34.148.254.141:12000
+        url: http://github-eventsource.104.196.43.59.nip.io
       # type of events to listen to.
       # following listens to everything, hence *
       # You can find more info on https://developer.github.com/v3/activity/events/types/
@@ -68,48 +65,3 @@ spec:
       active: true
       # The media type used to serialize the payloads
       contentType: json
-      
-    example-without-api-credentials:
-      owner: "argoproj"
-      repository: "argo"
-      webhook:
-        endpoint: "/push"
-        port: "13000"
-        method: "POST"
-      events:
-        - "*"
-      webhookSecret:
-        name: github-access
-        key: secret
-      insecure: true
-      active: true
-      contentType: "json"
-
-#    example-with-secure-connection:
-#      owner: "argoproj"
-#      repository: "argo"
-#      webhook:
-#        endpoint: "/push"
-#        port: "13000"
-#        method: "POST"
-#        url: "http://myargofakeurl.fake"
-#        # k8s secret that contains the cert
-#        serverCertSecret:
-#          name: my-secret
-#          key: cert-key
-#        # k8s secret that contains the private key
-#        serverKeySecret:
-#          name: my-secret
-#          key: pk-key
-#      events:
-#        - "push"
-#        - "delete"
-#      apiToken:
-#        name: github-access
-#        key: token
-#      webhookSecret:
-#        name: github-access
-#        key: secret
-#      insecure: true
-#      active: true
-#      contentType: "json"

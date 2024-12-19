@@ -1,0 +1,20 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/name: github-eventsource
+  name: github-eventsource
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: github-eventsource.104.196.43.59.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: github-eventsource-svc
+            port:
+              number: 12000
+        path: /
+        pathType: ImplementationSpecific
