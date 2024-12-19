@@ -1,3 +1,4 @@
+
 # Info on GitHub Webhook: https://developer.github.com/v3/repos/hooks/#create-a-hook
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
@@ -28,7 +29,7 @@ spec:
       # Github will send events to following port and endpoint
       webhook:
         # endpoint to listen to events on
-        endpoint: /example
+        endpoint: /push
         # port to run internal HTTP server on
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
