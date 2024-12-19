@@ -1,4 +1,3 @@
-
 # Info on GitHub Webhook: https://developer.github.com/v3/repos/hooks/#create-a-hook
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
@@ -10,13 +9,13 @@ spec:
       - name: example
         port: 12000
         targetPort: 12000
-      - name: example-without-api-credentials
-        port: 13000
-        targetPort: 13000
+      # - name: example-without-api-credentials
+      #   port: 13000
+      #   targetPort: 13000
   github:
     example:
       repositories:
-        - owner: argoproj
+        - owner: vfarcic
           names:
             - argo-workflows-demo-2
       # Github application auth. Instead of using personal token `apiToken` use app PEM            
@@ -29,7 +28,7 @@ spec:
       # Github will send events to following port and endpoint
       webhook:
         # endpoint to listen to events on
-        endpoint: /push
+        endpoint: /example
         # port to run internal HTTP server on
         port: "12000"
         # HTTP request method to allow. In this case, only POST requests are accepted
@@ -38,7 +37,7 @@ spec:
         # This url must be reachable from outside the cluster.
         # The name for the service is in `<event-source-name>-eventsource-svc` format.
         # You will need to create an Ingress or Openshift Route for the event-source service so that it can be reached from GitHub.
-        url: http://35.231.105.32:12000
+        url: http://34.148.254.141:12000
       # type of events to listen to.
       # following listens to everything, hence *
       # You can find more info on https://developer.github.com/v3/activity/events/types/
