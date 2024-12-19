@@ -12,7 +12,6 @@ spec:
       - name: example-without-api-credentials
         port: 13000
         targetPort: 13000
-        
   github:
     example:
       repositories:
